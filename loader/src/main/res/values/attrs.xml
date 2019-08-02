@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="NetImageView">
+        <attr name="anim_duration" format="integer" />
+        <attr name="place_holder_image" format="reference" />
+        <attr name="fail_image" format="reference" />
+        <attr name="circle" format="boolean" />
+        <attr name="radius" format="dimension" />
+        <attr name="small" format="boolean" />
+        <attr name="border_color" format="color" />
+        <attr name="border_size" format="dimension" />
+        <attr name="image_scale_type" format="enum">
+            <enum name="centerCrop" value="0" />
+            <enum name="centerInside" value="1" />
+            <enum name="fitXY" value="2" />
+            <enum name="fitCenter" value="3" />
+            <enum name="fitStart" value="4" />
+            <enum name="fitEnd" value="5" />
+        </attr>
+        <attr name="place_holder_scale_type" format="enum">
+            <enum name="centerCrop" value="0" />
+            <enum name="centerInside" value="1" />
+            <enum name="fitXY" value="2" />
+            <enum name="fitCenter" value="3" />
+            <enum name="fitStart" value="4" />
+            <enum name="fitEnd" value="5" />
+        </attr>
+        <attr name="fail_image_scale_type" format="enum">
+            <enum name="centerCrop" value="0" />
+            <enum name="centerInside" value="1" />
+            <enum name="fitXY" value="2" />
+            <enum name="fitCenter" value="3" />
+            <enum name="fitStart" value="4" />
+            <enum name="fitEnd" value="5" />
+        </attr>
+        <attr name="auto_play" format="boolean" />
+    </declare-styleable>
+
+</resources>

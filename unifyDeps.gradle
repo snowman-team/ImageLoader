@@ -1,0 +1,20 @@
+rootProject.ext.compileSdkVersion = 29
+rootProject.ext.minSdkVersion = 21
+rootProject.ext.targetSdkVersion = 29
+rootProject.ext.sourceCompatibility = JavaVersion.VERSION_1_8
+
+rootProject.ext.FRESCO = "2.0.0"
+
+rootProject.ext.deps = [
+        // android
+        androidAppCompat        : "androidx.appcompat:appcompat:1.0.2",
+        androidKTX              : "androidx.core:core-ktx:1.0.2",
+        androidRecyclerView     : "androidx.recyclerview:recyclerview:1.0.0",
+
+        rxjava                  : "io.reactivex.rxjava3:rxjava:3.0.0-RC1",
+        fresco                  : "com.facebook.fresco:fresco:$FRESCO",
+        frescoGif               : "com.facebook.fresco:animated-gif:$FRESCO",
+        frescoOkHttp            : "com.facebook.fresco:imagepipeline-okhttp3:$FRESCO",
+        okHttp                  : "com.squareup.okhttp3:okhttp:3.14.2",
+]
+

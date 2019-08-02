@@ -1,0 +1,56 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'com.novoda.bintray-release'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility rootProject.ext.sourceCompatibility
+        targetCompatibility rootProject.ext.sourceCompatibility
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation rootProject.deps.androidAppCompat
+    implementation rootProject.deps.androidKTX
+    implementation rootProject.deps.androidRecyclerView
+
+    api rootProject.deps.rxjava
+    api rootProject.deps.okHttp
+
+    implementation rootProject.deps.fresco
+    implementation rootProject.deps.frescoGif
+    implementation rootProject.deps.frescoOkHttp
+}
+
+publish {
+    userOrg = USER_ORG
+    groupId = GROUP_ID
+    artifactId = 'loader'
+    publishVersion = VERSION
+    desc = 'Make fresco easier to use.'
+    website = 'https://github.com/snowman-team/ImageLoader'
+}
