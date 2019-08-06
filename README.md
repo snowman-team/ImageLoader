@@ -1,4 +1,4 @@
-Snowball Android Toolbox
+Snowball Android Image Loader
 ============
 
 Make fresco easier to use.
