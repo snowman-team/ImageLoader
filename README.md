@@ -1,4 +1,4 @@
-Snowball Android Image Loader
+Snowball Android Image Loader <br> [ ![Download](https://api.bintray.com/packages/aquarids/maven/loader/images/download.svg?version=0.1.2) ](https://bintray.com/aquarids/maven/loader/0.1.2/link)
 ============
 
 Make fresco easier to use.
