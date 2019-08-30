@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.IntDef
+import androidx.core.content.ContextCompat
 import com.facebook.common.util.UriUtil
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.controller.BaseControllerListener
@@ -177,10 +178,21 @@ class NetImageView : FrameLayout {
                 .build()
     }
 
-    fun loadImageFile(
-            imageFilePath: String?,
-            width: Int = measuredWidth,
-            height: Int = measuredHeight) {
+    fun loadVectorDrawable(@DrawableRes resId: Int,
+                           width: Int = measuredWidth,
+                           height: Int = measuredHeight) {
+        // https://github.com/facebook/fresco/issues/1176#issuecomment-216830098
+        if (0 == resId) return
+        val tempScaleType = placeHolderScaleType
+        placeHolderScaleType = imageScaleType
+        placeHolderImage = ContextCompat.getDrawable(context, resId)
+        sketch()
+        placeHolderScaleType = tempScaleType
+    }
+
+    fun loadImageFile(imageFilePath: String?,
+                      width: Int = measuredWidth,
+                      height: Int = measuredHeight) {
         if (imageFilePath.isNullOrEmpty()) return
         val uri = Uri.Builder()
                 .scheme(UriUtil.LOCAL_FILE_SCHEME)
@@ -189,10 +201,9 @@ class NetImageView : FrameLayout {
         loadImage(uri, width, height)
     }
 
-    fun loadDrawable(
-            @DrawableRes resId: Int,
-            width: Int = measuredWidth,
-            height: Int = measuredHeight) {
+    fun loadDrawable(@DrawableRes resId: Int,
+                     width: Int = measuredWidth,
+                     height: Int = measuredHeight) {
         if (0 == resId) return
         val uri = Uri.Builder()
                 .scheme(UriUtil.LOCAL_RESOURCE_SCHEME)
@@ -202,10 +213,9 @@ class NetImageView : FrameLayout {
         loadImage(uri, width, height)
     }
 
-    fun loadAssetsImage(
-            imageFilePath: String?,
-            width: Int = measuredWidth,
-            height: Int = measuredHeight) {
+    fun loadAssetsImage(imageFilePath: String?,
+                        width: Int = measuredWidth,
+                        height: Int = measuredHeight) {
         if (imageFilePath.isNullOrEmpty()) return
         val uri = Uri.Builder()
                 .scheme(UriUtil.LOCAL_ASSET_SCHEME)
@@ -224,10 +234,9 @@ class NetImageView : FrameLayout {
         loadImage(uri, measuredWidth, measuredHeight)
     }
 
-    fun loadImage(
-            url: String?,
-            width: Int = measuredWidth,
-            height: Int = measuredHeight) {
+    fun loadImage(url: String?,
+                  width: Int = measuredWidth,
+                  height: Int = measuredHeight) {
 
         if (url.isNullOrEmpty()) {
             return
@@ -237,10 +246,9 @@ class NetImageView : FrameLayout {
         loadImage(uri, width, height)
     }
 
-    fun loadImage(
-            uri: Uri,
-            width: Int = measuredWidth,
-            height: Int = measuredHeight) {
+    fun loadImage(uri: Uri,
+                  width: Int = measuredWidth,
+                  height: Int = measuredHeight) {
         mUri = uri
         if (!mHasMeasured) {
             return

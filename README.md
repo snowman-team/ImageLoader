@@ -6,9 +6,6 @@ Make fresco easier to use.
 ## Installation
 
 ```groovy
-repositories {
-    maven { url "https://xueqiumobile.bintray.com/maven" }
-}
 dependencies {
     // add dependency, please replace x.y.z to the latest version
     implementation "com.xueqiu.image:loader:x.y.z"
@@ -89,7 +86,7 @@ mIvImage.loadImage(imageUrl) // image or gif url
 ```
 
 If you want to make image zoomable, use image browser view
-```kotlin
+```xml
 <com.xueqiu.image.loader.view.ImageBrowserView
     android:id="@+id/iv_image"
     android:layout_width="match_parent"
@@ -122,3 +119,5 @@ class CustomTransformer : BaseTransformer() {
 
 }
 ```
+
+For more details, please read the example and source code.

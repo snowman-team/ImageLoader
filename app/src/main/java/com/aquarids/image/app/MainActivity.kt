@@ -20,8 +20,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val builder = ImageBuilder()
-                .withNetImage("https://xqimg.imedao.com/16bf87d9eba8e3fb87b00041.jpg")
-                .withTransformer(BlurTransformer(2, 5))
+                .withAssetsImage("svg/test.svg")
                 .isSmall(false)
 
         val disposable = ImageLoader.loadImage(builder)
@@ -41,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         mCompositeDisposable.add(disposable)
 
         iv_image_2.autoPlay = true
-        iv_image_2.loadImage("https://xqimg.imedao.com/16b9166559dcf53fd69991f4.gif")
+        iv_image_2.loadVectorDrawable(R.drawable.snowball)
 
         iv_image_3.loadImage("https://xqimg.imedao.com/16bf87d9eba8e3fb87b00041.jpg")
     }

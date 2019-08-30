@@ -44,6 +44,7 @@ dependencies {
     implementation rootProject.deps.fresco
     implementation rootProject.deps.frescoGif
     implementation rootProject.deps.frescoOkHttp
+    implementation rootProject.deps.svg
 }
 
 publish {
@@ -52,5 +53,5 @@ publish {
     artifactId = 'loader'
     publishVersion = VERSION
     desc = 'Make fresco easier to use.'
-    website = 'https://github.com/snowman-team/ImageLoader'
+    website = GITHUB
 }

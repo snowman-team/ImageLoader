@@ -1,11 +1,15 @@
 package com.xueqiu.image.loader
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.PictureDrawable
 import com.facebook.common.references.CloseableReference
 import com.facebook.datasource.BaseDataSubscriber
 import com.facebook.datasource.DataSource
 import com.facebook.imagepipeline.image.CloseableBitmap
 import com.facebook.imagepipeline.image.CloseableImage
+import com.xueqiu.image.loader.svg.CloseableSvgImage
+
 
 class ImageDataSubscriber(val callback: Callback) : BaseDataSubscriber<CloseableReference<CloseableImage>>() {
 
@@ -14,18 +18,10 @@ class ImageDataSubscriber(val callback: Callback) : BaseDataSubscriber<Closeable
             val imageReference = dataSource?.result
             if (imageReference != null) {
                 try {
-                    val image = imageReference.get() as? CloseableBitmap?
-                    if (null == image) {
-                        callback.onError(NullPointerException("Get null bitmap or bitmap is recycled"))
-                        return
-                    }
-                    val underlyingBitmap = image.underlyingBitmap
-                    if (null != underlyingBitmap && !underlyingBitmap.isRecycled) {
-                        callback.onSuccess(Bitmap.createBitmap(image.underlyingBitmap))
-                        return
-                    } else {
-                        callback.onError(NullPointerException("Get null bitmap or bitmap is recycled"))
-                        return
+                    when (val image = imageReference.get()) {
+                        is CloseableBitmap -> fromBitmapImage(image)
+                        is CloseableSvgImage -> fromSvgImage(image)
+                        else -> callback.onError(IllegalStateException("Get unknown image reference"))
                     }
                 } catch (e: OutOfMemoryError) {
                     callback.onError(e)
@@ -51,6 +47,30 @@ class ImageDataSubscriber(val callback: Callback) : BaseDataSubscriber<Closeable
     }
 
     override fun onProgressUpdate(dataSource: DataSource<CloseableReference<CloseableImage>>?) {}
+
+    private fun fromBitmapImage(image: CloseableBitmap) {
+        val underlyingBitmap = image.underlyingBitmap
+        if (null != underlyingBitmap && !underlyingBitmap.isRecycled) {
+            callback.onSuccess(Bitmap.createBitmap(image.underlyingBitmap))
+            return
+        } else {
+            callback.onError(NullPointerException("Get null bitmap or bitmap is recycled"))
+            return
+        }
+    }
+
+    private fun fromSvgImage(image: CloseableSvgImage) {
+        val drawable = PictureDrawable(image.svg.renderToPicture())
+        val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        Canvas(bitmap).drawPicture(drawable.picture)
+        if (null != bitmap && !bitmap.isRecycled) {
+            callback.onSuccess(Bitmap.createBitmap(bitmap))
+            return
+        } else {
+            callback.onError(NullPointerException("Get null bitmap or bitmap is recycled"))
+            return
+        }
+    }
 
     interface Callback {
         fun onSuccess(bitmap: Bitmap)

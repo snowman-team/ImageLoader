@@ -12,14 +12,17 @@ import com.facebook.common.memory.NoOpMemoryTrimmableRegistry
 import com.facebook.common.references.CloseableReference
 import com.facebook.common.util.UriUtil
 import com.facebook.datasource.DataSources
+import com.facebook.drawee.backends.pipeline.DraweeConfig
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory
 import com.facebook.imagepipeline.common.ResizeOptions
 import com.facebook.imagepipeline.core.ImagePipeline
 import com.facebook.imagepipeline.core.ImagePipelineFactory
+import com.facebook.imagepipeline.decoder.ImageDecoderConfig
 import com.facebook.imagepipeline.image.CloseableBitmap
 import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
+import com.xueqiu.image.loader.svg.*
 import io.reactivex.Emitter
 import io.reactivex.Observable
 import okhttp3.OkHttpClient
@@ -151,7 +154,8 @@ object ImageLoader {
             val suggestedTrimRatio = trimType.suggestedTrimRatio
             if (MemoryTrimType.OnCloseToDalvikHeapLimit.suggestedTrimRatio == suggestedTrimRatio
                     || MemoryTrimType.OnSystemLowMemoryWhileAppInBackground.suggestedTrimRatio == suggestedTrimRatio
-                    || MemoryTrimType.OnSystemLowMemoryWhileAppInForeground.suggestedTrimRatio == suggestedTrimRatio) {
+                    || MemoryTrimType.OnSystemLowMemoryWhileAppInForeground.suggestedTrimRatio == suggestedTrimRatio
+            ) {
                 Fresco.getImagePipeline().clearMemoryCaches()
             }
         }
@@ -183,17 +187,28 @@ object ImageLoader {
                 .setMaxCacheSize(options.smallCacheSize)
                 .build()
 
-        val config = OkHttpImagePipelineConfigFactory.newBuilder(context, okHttpClientBuilder.build())
+        val imageDecoderConfig = ImageDecoderConfig.newBuilder()
+                .addDecodingCapability(SvgConstant.SVG_FORMAT,
+                        SvgFormatChecker(),
+                        SvgDecoder())
+                .build()
+
+        val pipelineConfig = OkHttpImagePipelineConfigFactory.newBuilder(context, okHttpClientBuilder.build())
                 .setMainDiskCacheConfig(diskCacheConfig)
                 .setSmallImageDiskCacheConfig(smallImageDiskCacheConfig)
                 .setResizeAndRotateEnabledForNetwork(options.isNetworkResize)
                 .setBitmapsConfig(options.decodeFormat)
+                .setImageDecoderConfig(imageDecoderConfig)
                 .setMemoryTrimmableRegistry(memoryTrimmableRegistry)
                 .setDownsampleEnabled(options.isDownSampling)
                 .setCacheKeyFactory(ImageCacheKeyFactory)
                 .build()
 
-        Fresco.initialize(context, config)
+        val draweeConfig = DraweeConfig.newBuilder()
+                .addCustomDrawableFactory(SvgDrawableFactory())
+                .build()
+
+        Fresco.initialize(context, pipelineConfig, draweeConfig)
     }
 
     private fun loadImageWithFresco(imageBuilder: ImageBuilder): Observable<Bitmap> {
@@ -213,10 +228,8 @@ object ImageLoader {
         }
     }
 
-    private fun getImageBitmapFromNet(uri: Uri,
-                                      imagePipeline: ImagePipeline,
-                                      builder: ImageBuilder,
-                                      emitter: Emitter<Bitmap>) {
+    private fun getImageBitmapFromNet(uri: Uri, imagePipeline: ImagePipeline, builder: ImageBuilder, emitter: Emitter<Bitmap>) {
+
         val imageRequestBuilder = ImageRequestBuilder.newBuilderWithSource(uri)
                 .setCacheChoice(if (builder.isSmall) ImageRequest.CacheChoice.SMALL else ImageRequest.CacheChoice.DEFAULT)
         builder.transformer?.let {
@@ -246,10 +259,12 @@ object ImageLoader {
 
     }
 
-    private fun getImageBitmapFromMemory(uri: Uri,
-                                         imagePipeline: ImagePipeline,
-                                         builder: ImageBuilder,
-                                         emitter: Emitter<Bitmap>) {
+    private fun getImageBitmapFromMemory(
+            uri: Uri,
+            imagePipeline: ImagePipeline,
+            builder: ImageBuilder,
+            emitter: Emitter<Bitmap>
+    ) {
         val imageRequestBuilder = ImageRequestBuilder.newBuilderWithSource(uri)
                 .setCacheChoice(if (builder.isSmall) ImageRequest.CacheChoice.SMALL else ImageRequest.CacheChoice.DEFAULT)
         builder.transformer?.let {

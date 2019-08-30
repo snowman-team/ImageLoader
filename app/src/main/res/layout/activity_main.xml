@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,15 +10,9 @@
 
     <ImageView
         android:id="@+id/iv_image"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:scaleType="centerCrop" />
-
-    <com.xueqiu.image.loader.view.NetImageView
-        android:id="@+id/iv_image_2"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="10dp" />
 
     <com.xueqiu.image.loader.view.ImageBrowserView
         android:id="@+id/iv_image_3"
@@ -25,5 +20,11 @@
         android:layout_height="200dp"
         android:layout_marginTop="10dp" />
 
+    <com.xueqiu.image.loader.view.NetImageView
+        android:id="@+id/iv_image_2"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="10dp"
+        app:image_scale_type="fitCenter" />
 
 </LinearLayout>
